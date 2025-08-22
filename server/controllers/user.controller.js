@@ -1,5 +1,6 @@
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs'
+import { generateToken } from "../utils/generateToken.js";
 
 export const register = async (req, res) => {
     try {
@@ -12,18 +13,36 @@ export const register = async (req, res) => {
         }
 
         const user = await User.findOne({ email })
+
         if (user) {
             return res.status(400).json({
                 success: false,
                 message: "User already exist with this email "
             })
         }
+
         const hashPassword = await bcrypt.hash(password, 10)
-        await User.create({
+        const CretedUser = await User.create({
             name,
             email,
             password: hashPassword
         })
+        CretedUser.password = undefined;
+        if (CretedUser) {
+
+            res.status(200).json({
+                success: true,
+                message: "User Created Successfully",
+                CretedUser
+            })
+        }
+        else {
+            res.status(401).json({
+                success: false,
+                message: "User Creation Failed. Please try again",
+            })
+        }
+
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -42,6 +61,7 @@ export const login = async (req, res) => {
                 message: "All fields are required"
             })
         }
+
         const user = await User.findOne({ email })
         if (!user) {
             return res.status(401).json({
@@ -49,18 +69,22 @@ export const login = async (req, res) => {
                 message: "Incorrect Email or Password"
             });
         }
-        const comparePassword = await bcrypt.compare(password, user.password)
-        if (password !== comparePassword) {
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        console.log("isMathc > ", isMatch);
+
+        if (!isMatch) {
             return res.status(401).json({
                 success: false,
                 message: "Incorrect Email or Password"
             })
         }
+        generateToken(res, user, `Welcome back ${user.name}`)
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            success:false,
-            message:"Failed to login"
+            success: false,
+            message: "Failed to login"
         })
     }
 

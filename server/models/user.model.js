@@ -1,4 +1,4 @@
-import {Schema} from 'mongoose'
+import { mongoose, Schema, model } from 'mongoose'
 
 const userSchema = new Schema({
     name: {
@@ -24,15 +24,15 @@ const userSchema = new Schema({
     entrolledCourse: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref:'Course'
+            ref: 'Course'
         }
     ],
-    profileUrl:{
-        type:String,
-        default:""
+    profileUrl: {
+        type: String,
+        default: ""
     },
 
-},{timestamps:true})
+}, { timestamps: true })
 
 const User = model("user", userSchema);
 
