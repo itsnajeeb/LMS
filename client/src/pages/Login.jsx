@@ -1,6 +1,7 @@
-import { AppWindowIcon, CodeIcon } from "lucide-react"
+import { AppWindowIcon, CodeIcon, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { toast } from 'sonner'
 import {
     Card,
     CardContent,
@@ -17,7 +18,8 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useLoginUserMutation, useRegisterUserMutation } from "../features/api/authApi"
 
 const Login = () => {
     const [loginInput, setLoginInput] = useState({
@@ -25,6 +27,22 @@ const Login = () => {
         password: ""
     })
     const [signupInput, setSignInput] = useState({ name: "", email: "", password: "" });
+
+    const [registerUser, {
+        data: registerData,
+        error: registerError,
+        isLoading: registerIsLoading,
+        isSuccess: registerIsSuccess
+    }
+    ] = useRegisterUserMutation();
+
+    const [loginUser, {
+        data: loginData,
+        error: loginError,
+        isLoading: loginIsLoading,
+        isSuccess: loginIsSuccess,
+    }
+    ] = useLoginUserMutation();
 
     const changeInputHandler = (e, type) => {
 
@@ -37,11 +55,36 @@ const Login = () => {
         }
     }
 
-    const handleRegistration = (type) => {
-        let inpurData = type === "signup" ? signupInput : loginInput
-        console.log(inpurData);
+    const handleRegistration = async (type) => {
+        let inpurData = type === "signup" ? signupInput : loginInput;
+        // console.log(inpurData);
+        const action = type === "signup" ? registerUser : loginUser;
+        await action(inpurData)
+    };
 
-    }
+    useEffect(() => {
+
+        if (registerIsSuccess && registerData) {
+            setSignInput({ name: "", email: "", password: "" })
+            toast.success(registerData.message || "Register Successful.");
+        }
+        if (registerError) {
+            setSignInput({ email: "", password: "" })
+            toast.error(registerError.data?.message || "Signup Failed.");
+        }
+    }, [registerIsSuccess, registerData, registerError]);
+
+    useEffect(() => {
+        if (loginIsSuccess && loginData) {
+            setLoginInput({ email: "", password: "" })
+            toast.success(loginData.message || "Logged In.");
+        }
+        if (loginError) {
+            setLoginInput({ email: "", password: "" })
+            toast.error(loginError.data?.message || "Login Failed.");
+        }
+    }, [loginIsSuccess, loginData, loginError]);
+
 
     return (
         <div className="flex w-full justify-center items-center mt-2">
@@ -91,7 +134,16 @@ const Login = () => {
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button onClick={() => { handleRegistration("signup") }}>Signup</Button>
+                            <Button className="cursor-pointer"
+                                disabled={registerIsLoading} onClick={() => { handleRegistration("signup") }}>
+                                {
+                                    registerIsLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please Wait
+                                        </>
+                                    ) : "Signup"
+                                }
+                            </Button>
                         </CardFooter>
                     </Card>
                 </TabsContent>
@@ -124,7 +176,17 @@ const Login = () => {
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button onClick={() => handleRegistration("login")}>Login</Button>
+
+                            <Button className="cursor-pointer"
+                                disabled={loginIsLoading} onClick={() => handleRegistration("login")}>
+                                {
+                                    loginIsLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        </>
+                                    ) : "Login"
+                                }
+                            </Button>
                         </CardFooter>
                     </Card>
                 </TabsContent>

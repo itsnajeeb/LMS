@@ -32,14 +32,13 @@ export const register = async (req, res) => {
 
             res.status(200).json({
                 success: true,
-                message: "User Created Successfully",
-                CretedUser
+                message: "Account Created Successfully",
             })
         }
         else {
             res.status(401).json({
                 success: false,
-                message: "User Creation Failed. Please try again",
+                message: "Acount Creation Failed. Please try again",
             })
         }
 
@@ -80,6 +79,8 @@ export const login = async (req, res) => {
             })
         }
         generateToken(res, user, `Welcome back ${user.name}`)
+
+        
     } catch (error) {
         console.log(error);
         return res.status(500).json({
