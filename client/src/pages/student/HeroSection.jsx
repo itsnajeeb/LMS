@@ -28,7 +28,8 @@ const HeroSection = () => {
                     dark:hover:bg-blue-800">Search</Button>
 
                 </form>
-                <Button className="bg-white text-blue-700 rounded-full 
+                <Button 
+                className="bg-white text-blue-700 rounded-full 
                 hover:bg-gray-200
                 dark:bg-gray-800 cursor-pointer">Explore Courses</Button>
             </div>

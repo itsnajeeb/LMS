@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tabs"
 import { useEffect, useState } from "react"
 import { useLoginUserMutation, useRegisterUserMutation } from "../features/api/authApi"
+import { useNavigate } from "react-router-dom"
 
 const Login = () => {
     const [loginInput, setLoginInput] = useState({
@@ -33,17 +34,15 @@ const Login = () => {
         error: registerError,
         isLoading: registerIsLoading,
         isSuccess: registerIsSuccess
-    }
-    ] = useRegisterUserMutation();
+    }] = useRegisterUserMutation();
 
     const [loginUser, {
         data: loginData,
         error: loginError,
         isLoading: loginIsLoading,
         isSuccess: loginIsSuccess,
-    }
-    ] = useLoginUserMutation();
-
+    }] = useLoginUserMutation();
+    const navigate = useNavigate()
     const changeInputHandler = (e, type) => {
 
         const { name, value } = e.target;
@@ -78,6 +77,7 @@ const Login = () => {
         if (loginIsSuccess && loginData) {
             setLoginInput({ email: "", password: "" })
             toast.success(loginData.message || "Logged In.");
+            navigate("/")
         }
         if (loginError) {
             setLoginInput({ email: "", password: "" })
