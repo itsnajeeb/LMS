@@ -11,7 +11,7 @@ export const authApi = createApi({
     endpoints: (builder) => ({
         registerUser: builder.mutation({
             query: (inputData) => ({
-                
+
                 url: 'register',
                 method: "POST",
                 body: inputData
@@ -33,12 +33,19 @@ export const authApi = createApi({
                     console.log(error)
                 }
             }
+        }),
+        loadUser: builder.query({
+            query: () => ({
+                url:'profile',
+                method:'GET',
 
+            })
         })
     })
-}) 
+})
 
 export const {
     useRegisterUserMutation,
-    useLoginUserMutation
+    useLoginUserMutation,
+    useLoadUserQuery,
 } = authApi

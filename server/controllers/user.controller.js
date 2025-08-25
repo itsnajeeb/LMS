@@ -70,7 +70,6 @@ export const login = async (req, res) => {
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log("isMathc > ", isMatch);
 
         if (!isMatch) {
             return res.status(401).json({
@@ -80,9 +79,9 @@ export const login = async (req, res) => {
         }
         generateToken(res, user, `Welcome back ${user.name}`)
 
-        
+
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "Failed to login"
@@ -90,4 +89,62 @@ export const login = async (req, res) => {
     }
 
 
+}
+
+export const logout = (req, res) => {
+    try {
+        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+            success: true,
+            message: "Logged Out Successfully."
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to logout"
+        })
+    }
+}
+
+export const getUserProfile = async (req, res, next) => {
+    try {
+        const id = req.id;
+        const user = await User.findById(id).select('-password');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Profile data not found."
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            user
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch your Profile data"
+        })
+    }
+}
+
+const updateProfile = async () => {
+    try {
+        const id = req.id;
+        const { name } = req.body
+        const { profilePhoto } = req.file
+
+        const user = await User.findById(id)
+
+        if(!user){
+            return res.status(401).json({
+                success:false,
+                message:"User Not Found !"
+            })
+        }
+        // Cloudinary Work is Pending
+        const updateProfile = {name, photoUrl}
+
+    } catch (error) {
+
+    }
 }
