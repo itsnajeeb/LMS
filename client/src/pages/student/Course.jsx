@@ -26,9 +26,9 @@ const Course = () => {
                         <h1 className="text-sm font-semibold">Er. Najeeb</h1>
                     </div>
                     <Badge variant="default |outline | secondary | destructive"
-                        className="bg-blue-700 text-white py-1 px-4 rounded-full text-sm
+                        className="bg-blue-700 text-white py-1 px-4 rounded-full text-sm 
                     hover:bg-gray-700"
-                    >Begginer</Badge>
+                    ><p>Begginer</p></Badge>
 
 
                 </div>

@@ -35,8 +35,8 @@ const Navbar = () => {
                                     <DropdownMenuContent>
                                         <DropdownMenuLabel className="cursor-pointer">My Account</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="cursor-pointer">My Learning</DropdownMenuItem>
-                                        <DropdownMenuItem className="cursor-pointer">Edit Profile</DropdownMenuItem>
+                                        <DropdownMenuItem className="cursor-pointer"><Link to={'my-learning'}>My Learning</Link></DropdownMenuItem>
+                                        <DropdownMenuItem className="cursor-pointer"><Link to={'profile'}>Edit Profile</Link></DropdownMenuItem>
                                         <DropdownMenuItem className="cursor-pointer"> Log out</DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem className="cursor-pointer">Dashboard</DropdownMenuItem>
@@ -78,6 +78,7 @@ import {
     SheetTrigger,
 } from "./ui/sheet"
 import { Separator } from '@radix-ui/react-dropdown-menu';
+import { Link } from 'react-router-dom';
 
 const MobileNavbar = () => {
     const role = 'instructor'
