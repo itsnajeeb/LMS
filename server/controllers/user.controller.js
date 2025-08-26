@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs'
 import { generateToken } from "../utils/generateToken.js";
+import { delteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
     try {
@@ -106,6 +107,7 @@ export const logout = (req, res) => {
 }
 
 export const getUserProfile = async (req, res, next) => {
+
     try {
         const id = req.id;
         const user = await User.findById(id).select('-password');
@@ -127,24 +129,68 @@ export const getUserProfile = async (req, res, next) => {
     }
 }
 
-const updateProfile = async () => {
+export const updateProfile = async (req, res, next) => {
     try {
         const id = req.id;
         const { name } = req.body
-        const { profilePhoto } = req.file
+
+        // if (!req.file.path) {
+        //     return res.status(302).json({
+        //         success: false,
+        //         message: "req file path not found"
+        //     })
+        // }
 
         const user = await User.findById(id)
 
-        if(!user){
+
+        if (!user) {
             return res.status(401).json({
-                success:false,
-                message:"User Not Found !"
+                success: false,
+                message: "User Not Found !"
             })
         }
-        // Cloudinary Work is Pending
-        const updateProfile = {name, photoUrl}
+        //extract public id of the old image from the url is it exist;
 
+        if (user.profileUrl) {
+            const publicId = user.profileUrl.split("/").pop().split(".")[0];//Extract Public id
+            delteMediaFromCloudinary(publicId)
+        }
+
+        // upload new photo 
+        let profileUrl;
+        let updatedData = {
+            name: "",
+            profileUrl: ""
+        }
+        if (req.file?.path) {
+            let filePath = req.file.path
+
+            const cloudResponse = await uploadMedia(filePath)
+
+            profileUrl = cloudResponse.secure_url;
+        }
+        else {
+            profileUrl = user.profileUrl;
+        }
+        if (!name || name == "") {
+            updatedData.name = user.name
+        }
+
+        updatedData = { name }
+
+        if (profileUrl) {
+            updatedData.profileUrl = profileUrl;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(id, updatedData, { new: true }).select('-password')
+
+        return res.status(200).json({
+            success: true,
+            updatedUser,
+            message: "Profile Updated Successfully"
+        })
     } catch (error) {
-
+        console.log(error);
     }
 }

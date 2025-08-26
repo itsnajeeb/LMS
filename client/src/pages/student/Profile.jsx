@@ -6,22 +6,55 @@ import { Label } from '@/components/ui/label'
 import { Input } from "@/components/ui/input"
 import { Loader2 } from 'lucide-react'
 import Course from './Course';
-import { useLoadUserQuery } from '../../features/api/authApi'
+import { useLoadUserQuery, useUpdateUserMutation } from '../../features/api/authApi'
+import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
+
 // import { useNavigate } from "react-router-dom"
 
 const Profile = () => {
 
-    const { data, isLoading } = useLoadUserQuery()
-    console.log(data);
-    
-    if (isLoading) return <h1>Profile Loading....</h1>
-    const { user } = data
-    console.log(user);
-    
+    const [name, setName] = useState("");
+    const [profilePhoto, setProfilePhoto] = useState(null);
+    const [open, setOpen] = useState(false);
 
-    let enrolledCourses = []
-    enrolledCourses = user.entrolledCourse;
-    // enrolledCourses=[1]
+    // const { userData } = useSelector(state => state.auth);
+    const { data, isLoading, isError, refetch, error } = useLoadUserQuery();
+    const [updateUser, { data: updateUserData, isLoading: updateUserIsLoading, isSuccess }] =
+        useUpdateUserMutation();
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success(updateUserData?.message || "Profile Updated");
+            refetch();
+            setOpen(false); // ✅ close dialog after success
+        }
+        if (isError) {
+            toast.error(error?.data?.message || "Profile Updation Failed");
+        }
+    }, [isSuccess, isError]);
+
+    const onChangeHandler = (e) => {
+        let file = e.target.files?.[0];
+        if (file) setProfilePhoto(file);
+    };
+
+    if (isLoading) {
+        <h1>Profile Loading....</h1>;
+    }
+
+
+    const { user } = data || {};
+    const enrolledCourses = user?.enrolledCourses || [];
+
+    const updateUserHandler = async () => {
+        const formData = new FormData();
+        formData.append("name", name);
+        // formData.append("profilePhoto", profilePhoto);
+        if (profilePhoto) formData.append("profilePhoto", profilePhoto);
+        await updateUser(formData);
+    };
+
 
 
     return (
@@ -31,27 +64,27 @@ const Profile = () => {
 
                 <div>
                     <Avatar className="h-24 w-24 md:h-32 md:w-32">
-                        <AvatarImage src={user.profileUrl || "https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=0&k=20&c=UEa7oHoOL30ynvmJzSCIPrwwopJdfqzBs0q69ezQoM8="} />
+                        <AvatarImage src={user?.profileUrl || "https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=0&k=20&c=UEa7oHoOL30ynvmJzSCIPrwwopJdfqzBs0q69ezQoM8="} />
                     </Avatar>
                 </div>
 
                 <div className='flex flex-col justify-center place-items-center gap-1 md:place-items-start '>
                     <div className='flex'>
-                        <h1 className='font-semibold mr-2 text-gray-900 dark:text-gray-100'>Name :<span className='text-gray-700 font-normal dark:text-gray-300'> {user.name} </span></h1>
+                        <h1 className='font-semibold mr-2 text-gray-900 dark:text-gray-100'>Name :<span className='text-gray-700 font-normal dark:text-gray-300'> {user?.name} </span></h1>
                     </div>
 
                     <div className='flex'>
-                        <h1 className='font-semibold mr-2 text-gray-900 dark:text-gray-100'>Email :<span className='text-gray-700 font-normal dark:text-gray-300'> {user.email}</span> </h1>
+                        <h1 className='font-semibold mr-2 text-gray-900 dark:text-gray-100'>Email :<span className='text-gray-700 font-normal dark:text-gray-300'> {user?.email}</span> </h1>
                     </div>
 
                     <div className='flex'>
-                        <h1 className='font-semibold mr-2 text-gray-900 dark:text-gray-100'>Role :<span className='text-gray-700 font-normal dark:text-gray-300'> {user.role.toUpperCase()}</span> </h1>
+                        <h1 className='font-semibold mr-2 text-gray-900 dark:text-gray-100'>Role :<span className='text-gray-700 font-normal dark:text-gray-300'> {user?.role.toUpperCase()}</span> </h1>
                     </div>
 
                     <div className='mt-2 md:mt-1'>
-                        <Dialog >
+                        <Dialog open={open} onOpenChange={setOpen} >
                             <DialogTrigger asChild>
-                                <Button size="sm" className="mt-2 cursor-pointer px-4 rounded-md">Edit Profile</Button>
+                                <Button size="sm" className="mt-2 cursor-pointer px-4 rounded-md" onClick={() => setOpen(true)} >Edit Profile</Button>
 
                             </DialogTrigger>
                             <DialogContent>
@@ -64,18 +97,27 @@ const Profile = () => {
                                 <div className='grid gap-4 py-4'>
                                     <div className='grid grid-cols-4 items-center gap-4'>
                                         <Label>Name </Label>
-                                        <Input type="text" placeholder="Name" className="col-span-3" />
+                                        <Input
+                                            type="text"
+                                            placeholder="Name"
+                                            className="col-span-3"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                        />
                                     </div>
                                     <div className='grid grid-cols-4 items-center gap-4'>
                                         <Label>Profile Image </Label>
-                                        <Input type="file" accept="image/*" placeholder="Name" className="col-span-3" />
+                                        <Input
+                                            name="profilePhoto"
+                                            type="file"
+                                            onChange={onChangeHandler} accept="image/*" placeholder="Name" className="col-span-3" />
                                     </div>
 
                                 </div>
 
                                 <DialogFooter>
-                                    <Button className="cursor-pointer" disabled={isLoading}>
-                                        {isLoading ? <div className='flex justify-baseline items-end'><Loader2 className='mr-2 h-4 w-4  animate-spin' /> <p>Saving...</p></div> : "Save Changes"}
+                                    <Button className="cursor-pointer" disabled={updateUserIsLoading} onClick={updateUserHandler}>
+                                        {updateUserIsLoading ? <div className='flex justify-baseline items-end'><Loader2 className='mr-2 h-4 w-4  animate-spin' /> <p>Saving...</p></div> : "Save Changes"}
                                     </Button>
 
                                 </DialogFooter>
@@ -92,8 +134,8 @@ const Profile = () => {
                     isLoading ? <MyEnrolledCoursesSkeleton /> :
                         <div className='grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 gap-4 my-5'>
                             {
-                                enrolledCourses.length === 0 ? <h1 className='font-bold text-lg mt-5 text-center'>You haven't enrolled yet</h1> :
-                                    enrolledCourses.map((course,index) => <Course  course={course} key={course._id} />)
+                                enrolledCourses?.length === 0 ? <h1 className='font-bold text-lg mt-5 text-center'>You haven't enrolled yet</h1> :
+                                    enrolledCourses?.map((course) => <Course course={course} key={course._id} />)
                             }
                         </div>
                 }

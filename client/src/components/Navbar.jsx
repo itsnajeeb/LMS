@@ -10,8 +10,35 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from './ui/button';
 import { DarkMode } from '../DarkMode';
+import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from "react-redux";
+import { userLoggedOut } from "../features/authSlice.js";
+import { authApi } from "../features/api/authApi.js";
+
+
 const Navbar = () => {
-    const user = true;
+
+    const { user } = useSelector(store => store.auth)
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [logoutUser, { data, isSuccess }] = useLogoutUserMutation()
+
+
+    const logoutHandler = async () => {
+        await logoutUser().unwrap();         // backend logout API
+        dispatch(userLoggedOut());           // authSlice clear
+        dispatch(authApi.util.resetApiState()); // RTK Query cache clear
+        navigate('/login')
+    }
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success(data.message || "Loguout Successfully")
+        }
+    }, [isSuccess])
+
+
     return (
         <div className='h-16 dark:bg-[#0A0A0A] bg-white  border-b dark:border-b-gray-800  gap-10'>
             <div className=' max-w-7xl mx-auto hidden md:flex  md:justify-between md:items-center gap-10 h-full px-4'>
@@ -28,7 +55,7 @@ const Navbar = () => {
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>
                                         <Avatar className="cursor-pointer">
-                                            <AvatarImage src="https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=0&k=20&c=UEa7oHoOL30ynvmJzSCIPrwwopJdfqzBs0q69ezQoM8=" />
+                                            <AvatarImage src={user?.profileUrl || "https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=0&k=20&c=UEa7oHoOL30ynvmJzSCIPrwwopJdfqzBs0q69ezQoM8="} />
                                             <AvatarFallback>CN</AvatarFallback>
                                         </Avatar>
                                     </DropdownMenuTrigger>
@@ -37,15 +64,23 @@ const Navbar = () => {
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem className="cursor-pointer"><Link to={'my-learning'}>My Learning</Link></DropdownMenuItem>
                                         <DropdownMenuItem className="cursor-pointer"><Link to={'profile'}>Edit Profile</Link></DropdownMenuItem>
-                                        <DropdownMenuItem className="cursor-pointer"> Log out</DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="cursor-pointer">Dashboard</DropdownMenuItem>
+                                        <DropdownMenuItem className="cursor-pointer" onClick={logoutHandler}> Log out</DropdownMenuItem>
+
+                                        {
+                                            user.role === "instructor" && (
+                                                <>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem className="cursor-pointer">Dashboard</DropdownMenuItem>
+                                                </>
+                                            )
+                                        }
+
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             ) : (
                                 <div className='flex items-center gap-2'>
-                                    <Button className="cursor-pointer" variant="outline">Login</Button>
-                                    <Button className="cursor-pointer" >Signup</Button>
+                                    <Button className="cursor-pointer" variant="outline " onClick={() => navigate('/login')}>Login</Button>
+                                    <Button className="cursor-pointer" onClick={() => navigate('/signup')}>Signup</Button>
                                 </div>
                             )}
                     <div className="cursor-pointer" >
@@ -78,10 +113,25 @@ import {
     SheetTrigger,
 } from "./ui/sheet"
 import { Separator } from '@radix-ui/react-dropdown-menu';
-import { Link } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
+import { useLogoutUserMutation } from '../features/api/authApi';
+import { useEffect } from 'react';
+import {  useSelector } from 'react-redux';
 
 const MobileNavbar = () => {
     const role = 'instructor'
+    const navigate = useNavigate()
+    const [logoutUser, { data, isSuccess }] = useLogoutUserMutation()
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success(data.message || "Loguout Successfully")
+            navigate("/login")
+        }
+    }, [isSuccess])
+
+    const logoutHandler = async () => {
+        await logoutUser()
+    }
     return (
         <Sheet>
             <SheetTrigger asChild  >
@@ -104,7 +154,7 @@ const MobileNavbar = () => {
                 <nav className='flex flex-col space-y-4 px-4'>
                     <span> My Learning</span>
                     <span> Edit Profile</span>
-                    <span> Log out</span>
+                    <span onClick={logoutHandler}> Log out</span>
                 </nav>
 
                 {

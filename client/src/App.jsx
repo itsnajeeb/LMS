@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Navbar from './components/Navbar'
 import Login from './pages/Login'
 import HeroSection from './pages/student/HeroSection'
 import Course from './pages/student/courses'
@@ -16,18 +15,22 @@ const appRouter = createBrowserRouter([
         element:
           <>
             <HeroSection />
-            <Course/>
+            <Course />
           </>
       },
       {
         path: "login",
+        element: <Login />
+      }, 
+      {
+        path: "signup",
         element: <Login />
       },
       {
         path: "my-learning",
         element: <MyLearning />
       },
-       {
+      {
         path: "profile",
         element: <Profile />
       },
@@ -38,8 +41,8 @@ const appRouter = createBrowserRouter([
 function App() {
   return (
     <main>
-      <RouterProvider router={appRouter}/>
-      
+      <RouterProvider router={appRouter} />
+
     </main>
   )
 }

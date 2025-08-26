@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import cookie from 'cookie-parser'
 
 export const generateToken = (res, user, message) => {
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
@@ -14,5 +13,6 @@ export const generateToken = (res, user, message) => {
     return res.status(200).json({
         success: true,
         message,
+        user
     })
 }

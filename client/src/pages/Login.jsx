@@ -20,9 +20,12 @@ import {
 } from "@/components/ui/tabs"
 import { useEffect, useState } from "react"
 import { useLoginUserMutation, useRegisterUserMutation } from "../features/api/authApi"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 const Login = () => {
+    const location = useLocation()
+    const lastPart = location.pathname.split("/").filter(Boolean).pop();//for knowing where i am signup or login tab
+
     const [loginInput, setLoginInput] = useState({
         email: "",
         password: ""
@@ -66,6 +69,7 @@ const Login = () => {
         if (registerIsSuccess && registerData) {
             setSignInput({ name: "", email: "", password: "" })
             toast.success(registerData.message || "Register Successful.");
+            navigate('/login')
         }
         if (registerError) {
             setSignInput({ email: "", password: "" })
@@ -88,7 +92,7 @@ const Login = () => {
 
     return (
         <div className="flex w-full justify-center items-center mt-2">
-            <Tabs defaultValue="signup" className="max-w-sm w-[400px]">
+            <Tabs defaultValue={lastPart} className="max-w-sm w-[400px]">
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="signup" className="cursor-pointer">Signup</TabsTrigger>
                     <TabsTrigger value="login" className="cursor-pointer">Login</TabsTrigger>
