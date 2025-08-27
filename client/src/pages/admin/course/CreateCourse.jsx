@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -11,20 +11,39 @@ import {
 import { Button } from '../../../components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import { useCreateCourseMutation } from '../../../features/api/courseApi'
+import { toast } from 'sonner'
 export const CreateCourse = () => {
     const [courseTitle, setCourseTitle] = useState("")
-    const [courseCategory, setCourseCategory] = useState("")
+    const [category, setCategory] = useState("")
+
+    const [createCourse, { data, isLoading, error, isSuccess }] = useCreateCourseMutation()
+
     const navigate = useNavigate();
-    const isLoading = false;
 
     const getCourseCategory = (value) => {
-        setCourseCategory(value)
+        setCategory(value)
     }
 
     const createCourseHandler = async () => {
-        console.log("Title > ", courseTitle)
-        console.log("Category > ", courseCategory)
+        await createCourse({ courseTitle, category })
+        setCategory("")
+        setCourseTitle("")
+        navigate('/admin/course')
+
     }
+
+    //for displaying toast
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success(data?.message || "Course Created Successfully.")
+        }
+        if (error) {
+            console.log(data);
+
+            toast.error(data?.message || "Course creation failed. Please try again")
+        }
+    }, [isSuccess, error])
     return (
         <div className='flex-1 mx-10'>
             <div className='mb-4'>
@@ -35,9 +54,9 @@ export const CreateCourse = () => {
             <div className='space-y-7'>
                 <div className='flex flex-col gap-2.5'>
                     <Label>Title</Label>
-                    <Input
+                    <Input autoComplete="off"
                         value={courseTitle}
-                        onChange={(e)=>setCourseTitle(e.target.value)}
+                        onChange={(e) => setCourseTitle(e.target.value)}
                         type="text"
                         placeholder="Your Course Name"
                         name="courseTitle" />

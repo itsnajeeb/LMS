@@ -72,8 +72,10 @@ const CourseList = () => {
 
 
     ]
+
+    
     return (
-        <div>
+        <div className='mx-5'>
             <Button><Link to={'create-course'}>Create a new course</Link></Button>
             <Table className="mt-8 w-11/12">
                 <TableCaption>A list of your recent invoices.</TableCaption>
