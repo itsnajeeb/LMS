@@ -1,0 +1,7 @@
+    {
+        "javascript.suggest.autoImports": true,
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "editor.codeActionsOnSave": {
+            "source.addMissingImports": "always"
+        }
+    }

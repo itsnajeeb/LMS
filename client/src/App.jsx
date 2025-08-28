@@ -9,6 +9,7 @@ import Sidebar from './pages/admin/Sidebar'
 import Dashboard from './pages/admin/Dashboard'
 import CourseList from './pages/admin/course/CourseList'
 import { CreateCourse } from './pages/admin/course/CreateCourse'
+import { EditCourse } from './pages/admin/course/EditCourse'
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -25,7 +26,7 @@ const appRouter = createBrowserRouter([
       {
         path: "login",
         element: <Login />
-      }, 
+      },
       {
         path: "signup",
         element: <Login />
@@ -41,24 +42,28 @@ const appRouter = createBrowserRouter([
 
       //Admin Router 
       {
-        path:"admin",
-        element:<Sidebar/>,
-        children:[
+        path: "admin",
+        element: <Sidebar />,
+        children: [
           {
-            path:'dashboard',
-            element:<Dashboard/>
+            path: 'dashboard',
+            element: <Dashboard />
           },
           {
-            path:"course",
-            element:<CourseList/>
-          
+            path: "course",
+            element: <CourseList />
+
           },
           {
-            path:"course/create-course",
-            element:<CreateCourse/>
+            path: "course/create-course",
+            element: <CreateCourse />
+          },
+          {
+            path: "course/:courseId",
+            element: <EditCourse />
           }
         ]
-        
+
       }
 
     ]
