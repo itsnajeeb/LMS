@@ -40,7 +40,7 @@ const Navbar = () => {
 
 
     return (
-        <div className='h-16 dark:bg-[#0A0A0A] bg-white  border-b dark:border-b-gray-800  gap-10'>
+        <div className='h-16 dark:bg-[#0A0A0A] bg-white  border-b dark:border-b-gray-800  gap-10 fixed top-0 w-full z-10'>
             <div className=' max-w-7xl mx-auto hidden md:flex  md:justify-between md:items-center gap-10 h-full px-4'>
                 <div className='flex gap-2'>
                     <School size={30} />

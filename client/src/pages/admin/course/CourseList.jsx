@@ -21,7 +21,6 @@ const CourseList = () => {
     const { data, isLoading } = useGetCreatorCourseQuery()
 
     if (isLoading) return <h1>Data Loading...</h1>
-    console.log(data);
 
 
     return (
