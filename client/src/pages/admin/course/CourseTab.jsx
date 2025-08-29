@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { useNavigate, useParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import { useEditCourseMutation } from '../../../features/api/courseApi'
+import { useEditCourseMutation, useGetCourseByIdQuery } from '../../../features/api/courseApi'
 import { toast } from 'sonner'
 
 export const CourseTab = () => {
@@ -23,7 +23,7 @@ export const CourseTab = () => {
     const [previewThumbnail, setPreviewThumbnail] = useState();
     const [input, setInput] = useState({
         courseTitle: "",
-        subtitle: "",
+        subTitle: "",
         category: "",
         description: "",
         courseLevel: "",
@@ -54,14 +54,32 @@ export const CourseTab = () => {
     const updateCourseHandler = async () => {
         const formData = new FormData();
         formData.append("courseTitle", input.courseTitle)
-        formData.append("subTitle", input.subtitle)
+        formData.append("subTitle", input.subTitle)
         formData.append("description", input.description)
         formData.append("category", input.category)
         formData.append("courseLevel", input.courseLevel)
         formData.append("coursePrice", input.coursePrice)
         formData.append("courseThumbnail", input.courseThumbnail)
-        await editCourse({formData,courseId})
+        await editCourse({ formData, courseId })
     }
+
+    const { data: courseByIdData, isLoading: CourseByIdLoading } = useGetCourseByIdQuery(courseId)
+    const course = courseByIdData?.course
+    
+    useEffect(() => {
+        if (course) {
+            setInput({
+                courseTitle: course.courseTitle,
+                subTitle: course?.subTitle,
+                category: course.category,
+                description: course.description,
+                courseLevel: course.courseLevel,
+                coursePrice: course.coursePrice,
+                courseThumbnail: course.courseThumbnail,
+            })
+        }
+    }, [courseByIdData])
+
 
     useEffect(() => {
         if (isSuccess) {
@@ -100,12 +118,12 @@ export const CourseTab = () => {
                         />
                     </div>
                     <div className='space-y-2'>
-                        <Label>Subtitle</Label>
+                        <Label>subtitle</Label>
                         <Input
-                            value={input.subtitle}
+                            value={input.subTitle}
                             onChange={changeEvenHandler}
                             type="text"
-                            name="subtitle"
+                            name="subTitle"
                             placeholder="Ex. Become a Fullstack Developer from zero to hero"
                         />
                     </div>
@@ -142,6 +160,7 @@ export const CourseTab = () => {
                                     <SelectValue placeholder="Select Course Level" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    {/* {input.courseLevel && <SelectItem seleted  value={input.courseLevel}>{input.courseLevel}</SelectItem>} */}
                                     <SelectItem value="Begginer">Begginer</SelectItem>
                                     <SelectItem value="Medium">Medium</SelectItem>
                                     <SelectItem value="Advance">Advance</SelectItem>
@@ -168,7 +187,8 @@ export const CourseTab = () => {
                             onChange={selectThumbnail}
                             className="w-fit"
                         />
-                        {previewThumbnail && <img src={previewThumbnail} className='w-64 rounded h-40 my-2 ' alt='Course Thumbnail' />}
+                        {CourseByIdLoading ? "Loading image " : previewThumbnail ? <img src={previewThumbnail} className='w-64 rounded h-40 my-2 ' alt='Course Thumbnail' />:
+                         input.courseThumbnail && <img src={input.courseThumbnail} className='w-64 rounded h-40 my-2 ' alt='Course Thumbnail' />}
                     </div>
 
                     <div className='flex gap-5 mt-10'>

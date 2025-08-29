@@ -8,6 +8,9 @@ const courseSchema = new mongoose.Schema({
     subTitle: {
         type: String,
     },
+    description: {
+        type: String,
+    },
     category: {
         type: String,
         required: true,
