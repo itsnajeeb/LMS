@@ -12,7 +12,7 @@ const courses = () => {
                     {
                         isLoading ? Array.from({ length: 8 }).map((_, index) => (
                             <CourseSkeleton key={index} />
-                        )) : courses.map((course, index) => <Course key={index}/>)
+                        )) : courses.map((course, index) => <Course key={index} />)
                     }
                 </div>
             </div>
@@ -21,7 +21,7 @@ const courses = () => {
     )
 }
 
-export default courses
+export default courses;
 
 const CourseSkeleton = () => {
     return (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardTitle, CardHeader, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,11 +11,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import { useEditCourseMutation } from '../../../features/api/courseApi'
+import { toast } from 'sonner'
 
 export const CourseTab = () => {
     const navigate = useNavigate()
+    const params = useParams()
+    const courseId = params.courseId
     const [previewThumbnail, setPreviewThumbnail] = useState();
     const [input, setInput] = useState({
         courseTitle: "",
@@ -23,13 +27,11 @@ export const CourseTab = () => {
         category: "",
         description: "",
         courseLevel: "",
-        courseThumbnail: "",
         coursePrice: "",
+        courseThumbnail: "",
     });
 
-    const updateCourseHandler = () => {
-        console.log(input);
-    }
+    const [editCourse, { data, isLoading, isSuccess, error, }] = useEditCourseMutation()
     const changeEvenHandler = (e) => {
         const { name, value } = e.target
         setInput({ ...input, [name]: value })
@@ -48,9 +50,29 @@ export const CourseTab = () => {
             fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
             fileReader.readAsDataURL(file)
         }
-
     }
-    const isLoading = false;
+    const updateCourseHandler = async () => {
+        const formData = new FormData();
+        formData.append("courseTitle", input.courseTitle)
+        formData.append("subTitle", input.subtitle)
+        formData.append("description", input.description)
+        formData.append("category", input.category)
+        formData.append("courseLevel", input.courseLevel)
+        formData.append("coursePrice", input.coursePrice)
+        formData.append("courseThumbnail", input.courseThumbnail)
+        await editCourse({formData,courseId})
+    }
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success(data?.message || "Course Edited Successfully")
+            navigate("/admin/course")
+        }
+        if (error) {
+            toast.error(data?.message || "Failed to updated")
+        }
+    }, [isSuccess, error])
+    // const isLoading = false;
     const isPublished = false
     return (
         <Card className="mb-14">

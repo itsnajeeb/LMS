@@ -22,7 +22,7 @@ export const uploadMedia = async (file) => {
     }
 }
 
-export const delteMediaFromCloudinary = async (publicId) => {
+export const deleteMediaFromCloudinary = async (publicId) => {
     try {
         await cloudinary.uploader.destroy(publicId)
     } catch (error) {

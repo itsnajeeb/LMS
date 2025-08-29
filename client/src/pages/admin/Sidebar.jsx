@@ -26,7 +26,7 @@ const Sidebar = () => {
 
             {/* Main Content */}
             <div
-                className="flex-1 mt-24  mx-2 lg:ml-[300px] px-5 md:px-10  overflow-y-auto"
+                className="flex-1 mt-8  mx-2 lg:ml-[300px] px-5 md:px-10  overflow-y-auto"
             >
                 <Outlet />
             </div>

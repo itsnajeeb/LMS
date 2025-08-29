@@ -15,13 +15,11 @@ import {
 } from "@/components/ui/table"
 import { useGetCreatorCourseQuery } from '../../../features/api/courseApi'
 const CourseList = () => {
-
+    const { data, isLoading } = useGetCreatorCourseQuery()
     const navigate = useNavigate()
 
-    const { data, isLoading } = useGetCreatorCourseQuery()
-
     if (isLoading) return <h1>Data Loading...</h1>
-
+    // data.course.map(course => console.log())
 
     return (
         <div className='mx-5'>
@@ -42,11 +40,11 @@ const CourseList = () => {
                         data.course.map((course) => {
                             return (
                                 <TableRow key={course._id}>
-                                    <TableCell className="font-medium">{course?.coursePrice || "NA"}</TableCell>
+                                    <TableCell className="font-medium">{course?.coursePrice ||  "NA"}</TableCell>
                                     <TableCell ><Badge>{course.isPublished ? "Published" : "Draft"}</Badge></TableCell>
                                     <TableCell >{course.courseTitle}</TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size='sm' className="cursor-pointer" onClick={()=> navigate(`${course._id}`)}><Edit /></Button>
+                                        <Button variant="ghost" size='sm' className="cursor-pointer" onClick={() => navigate(`${course._id}`)}><Edit /></Button>
                                     </TableCell>
                                 </TableRow>
                             )
