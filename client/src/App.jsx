@@ -10,7 +10,8 @@ import Dashboard from './pages/admin/Dashboard'
 import CourseList from './pages/admin/course/CourseList'
 import { CreateCourse } from './pages/admin/course/CreateCourse'
 import { EditCourse } from './pages/admin/course/EditCourse'
-import { LectureTab } from './pages/admin/course/LectureTab'
+import CreateLecture from './pages/admin/lecture/CreateLecture'
+import EditLecture from './pages/admin/lecture/EditLecture'
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -65,8 +66,13 @@ const appRouter = createBrowserRouter([
           },
           {
             path: "course/:courseId/lecture",
-            element: <LectureTab />
-          }
+            element: <CreateLecture />
+          }, 
+          {
+            path: "course/:courseId/lecture/:lectureId",
+            element: <EditLecture />
+          },
+         
         ]
 
       }
