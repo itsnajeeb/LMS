@@ -65,7 +65,7 @@ export const CourseTab = () => {
 
     const [publishCourse] = usePublishCourseMutation()
 
-    const { data: courseByIdData, isLoading: CourseByIdLoading,refetch } = useGetCourseByIdQuery(courseId)
+    const { data: courseByIdData, isLoading: CourseByIdLoading, refetch } = useGetCourseByIdQuery(courseId)
     const course = courseByIdData?.course
 
     useEffect(() => {
@@ -97,7 +97,7 @@ export const CourseTab = () => {
         console.log(courseByIdData?.course?.isPublished);
 
         try {
-            const response = await publishCourse({ courseId, query:action })
+            const response = await publishCourse({ courseId, query: action })
             if (response.data) {
                 refetch()
                 toast.success(response.data?.message)
@@ -115,6 +115,7 @@ export const CourseTab = () => {
                 </div>
                 <div className='flex gap-4'>
                     <Button variant="outline" size={"sm"} className="cursor-pointer"
+                        disabled={courseByIdData?.course.lectures.length === 0}
                         onClick={() => publishStatusHandler(courseByIdData?.course?.isPublished ? "false" : "true")}>
                         {courseByIdData?.course.isPublished ? "Un-Publish" : "Publish"}
                     </Button>

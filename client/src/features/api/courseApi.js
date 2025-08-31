@@ -18,6 +18,14 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Refetch_Creator_course']
         }),
+
+        getPublisedCourse: builder.query({
+            query:()=>({
+                url:"/published-courses",
+                method:"GET"
+            })
+        }),
+
         getCreatorCourse: builder.query({
             query: () => ({
                 url: "",
@@ -72,25 +80,27 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Refetch_Lecture']
         }),
-        getLectureById : builder.query({
-            query:(lectureId)=>({
-                    url:`/lecture/${lectureId}`,
-                    method:"GET"
+        getLectureById: builder.query({
+            query: (lectureId) => ({
+                url: `/lecture/${lectureId}`,
+                method: "GET"
             }),
         }),
-        publishCourse : builder.mutation({
-            query:({courseId, query})=>({
-                url:`/${courseId}?publish=${query}`,
-                method:"PATCH",
+        publishCourse: builder.mutation({
+            query: ({ courseId, query }) => ({
+                url: `/${courseId}?publish=${query}`,
+                method: "PATCH",
             })
 
-        })
+        }),
+
 
     })
 })
 
 export const {
     useCreateCourseMutation,
+    useGetPublisedCourseQuery,
     useGetCreatorCourseQuery,
     useEditCourseMutation,
     useGetCourseByIdQuery,
@@ -99,5 +109,5 @@ export const {
     useEditLectureMutation,
     useRemoveLectureMutation,
     useGetLectureByIdQuery,
-    usePublishCourseMutation
+    usePublishCourseMutation,
 } = courseApi

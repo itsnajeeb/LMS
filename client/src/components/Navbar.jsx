@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from './ui/button';
 import { DarkMode } from '../DarkMode';
 import { toast } from 'sonner'
-import { useNavigate } from 'react-router-dom'
+import { Links, useNavigate } from 'react-router-dom'
 import { useDispatch } from "react-redux";
 import { userLoggedOut } from "../features/authSlice.js";
 import { authApi } from "../features/api/authApi.js";
@@ -43,8 +43,10 @@ const Navbar = () => {
         <div className='h-16 dark:bg-[#0A0A0A] bg-white  border-b dark:border-b-gray-800  gap-10 sticky top-0 w-full z-10'>
             <div className=' max-w-7xl mx-auto hidden md:flex  md:justify-between md:items-center gap-10 h-full px-4'>
                 <div className='flex gap-2'>
-                    <School size={30} />
-                    <h1 className='hidden md:block text-2xl font-extrabold'>E-Learning</h1>
+                    <Link to={'/'} className='flex gap-2'>
+                        <School size={30} />
+                        <h1 className='hidden md:block text-2xl font-extrabold'>E-Learning</h1>
+                    </Link>
                 </div>
 
                 {/* User Icon and dark mode icon  */}
@@ -116,7 +118,7 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Link, } from 'react-router-dom';
 import { useLogoutUserMutation } from '../features/api/authApi';
 import { useEffect } from 'react';
-import {  useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const MobileNavbar = () => {
     const role = 'instructor'

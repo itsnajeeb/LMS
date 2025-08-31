@@ -315,9 +315,9 @@ export const togglePublishCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
         const { publish } = req.query // true or false
-        
+
         const course = await Course.findById(courseId)
-        
+
         if (!course) {
             return res.status(404).json({
                 success: false,
@@ -335,6 +335,27 @@ export const togglePublishCourse = async (req, res) => {
         return res.status(500).json({
             message: false,
             message: "Course Publish failed"
+        })
+    }
+}
+export const getPublishedCourse = async (_, res) => {
+    try {
+        const course = await Course.find({ isPublished: true }).populate({ path: "creator", select: "name profileUrl" });
+        
+        if (!course) {
+            res.status(404).json({
+                success: false,
+                message: "There is not Course Published yet by admin "
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            course
+        })
+    } catch (err) {
+        return res.status(500).json({
+            message: false,
+            message: " Course not found"
         })
     }
 }
