@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { useNavigate, useParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import { useEditCourseMutation, useGetCourseByIdQuery } from '../../../features/api/courseApi'
+import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from '../../../features/api/courseApi'
 import { toast } from 'sonner'
 
 export const CourseTab = () => {
@@ -63,9 +63,11 @@ export const CourseTab = () => {
         await editCourse({ formData, courseId })
     }
 
-    const { data: courseByIdData, isLoading: CourseByIdLoading } = useGetCourseByIdQuery(courseId)
+    const [publishCourse] = usePublishCourseMutation()
+
+    const { data: courseByIdData, isLoading: CourseByIdLoading,refetch } = useGetCourseByIdQuery(courseId)
     const course = courseByIdData?.course
-    
+
     useEffect(() => {
         if (course) {
             setInput({
@@ -91,7 +93,19 @@ export const CourseTab = () => {
         }
     }, [isSuccess, error])
     // const isLoading = false;
-    const isPublished = false
+    const publishStatusHandler = async (action) => {
+        console.log(courseByIdData?.course?.isPublished);
+
+        try {
+            const response = await publishCourse({ courseId, query:action })
+            if (response.data) {
+                refetch()
+                toast.success(response.data?.message)
+            }
+        } catch (err) {
+            toast.error("Failed to publish or unpublish course status", err)
+        }
+    }
     return (
         <Card className="mb-14">
             <CardHeader className="flex justify-between">
@@ -100,7 +114,10 @@ export const CourseTab = () => {
                     <CardDescription>Make Changes to your course here. click save when you're done</CardDescription>
                 </div>
                 <div className='flex gap-4'>
-                    <Button variant="outline" size={"sm"} className="cursor-pointer">{isPublished ? "Un-Publish" : "Publish"}</Button>
+                    <Button variant="outline" size={"sm"} className="cursor-pointer"
+                        onClick={() => publishStatusHandler(courseByIdData?.course?.isPublished ? "false" : "true")}>
+                        {courseByIdData?.course.isPublished ? "Un-Publish" : "Publish"}
+                    </Button>
                     <Button className="cursor-pointer" size={"sm"}>Remove Course</Button>
                 </div>
             </CardHeader>
@@ -187,8 +204,8 @@ export const CourseTab = () => {
                             onChange={selectThumbnail}
                             className="w-fit"
                         />
-                        {CourseByIdLoading ? "Loading image " : previewThumbnail ? <img src={previewThumbnail} className='w-64 rounded h-40 my-2 ' alt='Course Thumbnail' />:
-                         input.courseThumbnail && <img src={input.courseThumbnail} className='w-64 rounded h-40 my-2 ' alt='Course Thumbnail' />}
+                        {CourseByIdLoading ? "Loading image " : previewThumbnail ? <img src={previewThumbnail} className='w-64 rounded h-40 my-2 ' alt='Course Thumbnail' /> :
+                            input.courseThumbnail && <img src={input.courseThumbnail} className='w-64 rounded h-40 my-2 ' alt='Course Thumbnail' />}
                     </div>
 
                     <div className='flex gap-5 mt-10'>
