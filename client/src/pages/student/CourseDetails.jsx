@@ -10,8 +10,11 @@ import {
 import { Separator } from "@/components/ui/Separator"
 import { Button } from '../../components/ui/button'
 import ByCourseButton from '../../components/ByCourseButton'
-
+import { useParams } from 'react-router-dom'
 const CourseDetails = () => {
+    const param = useParams()
+    const courseId = param.courseId
+
     const purchaseCourse = false
     return (
         <div className=' space-y-5'>
@@ -77,7 +80,7 @@ const CourseDetails = () => {
                             {
                                 purchaseCourse ?
                                     <Button className="w-full">Continue Course</Button>
-                                    : <ByCourseButton/>
+                                    : <ByCourseButton courseId={courseId} />
                             }
                         </CardFooter>
 

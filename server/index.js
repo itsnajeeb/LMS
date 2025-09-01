@@ -5,6 +5,7 @@ import userRoute from './routes/user.route.js'
 import courseRoutre from './routes/course.route.js'
 import mediaRoute from './routes/media.route.js'
 import cookieParser from 'cookie-parser';
+import purchaseRoute from './routes/purchaseCourse.route.js'
 import cors from 'cors'
 dotenv.config({})
 const app = express();
@@ -26,7 +27,7 @@ app.use(cors({
 app.use('/api/v1/media', mediaRoute)
 app.use('/api/v1/user', userRoute)
 app.use('/api/v1/course', courseRoutre)
-
+app.use('/api/v1/purchase', purchaseRoute)
 
 
 
