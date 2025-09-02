@@ -11,9 +11,10 @@ import {
 import { Separator } from "@/components/ui/Separator"
 import { Button } from '../../components/ui/button'
 import ByCourseButton from '../../components/ByCourseButton'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useGetCourseDetailWithStatusQuery } from '../../features/api/purchaseApi'
 const CourseDetails = () => {
+    const navigate = useNavigate()
     const param = useParams()
     const courseId = param.courseId
 
@@ -24,7 +25,9 @@ const CourseDetails = () => {
 
     const { course, purchased } = data;
 
-
+    const handleContinueCourse = () => {
+        navigate(`/course-progress/${courseId}`)
+    }
     return (
         <div className=' space-y-5'>
             <div className='bg-[#2D2F31] text-white'>
@@ -36,7 +39,7 @@ const CourseDetails = () => {
                         <BadgeInfo size={16} />
                         <p>Last Updated {course?.createdAt.split("T")[0]}</p>
                     </div>
-                    <p>Studnet Enroll :{course?.enrolledStudents.length}</p>
+                    <p>Studnet Enroll : {course?.enrolledStudents.length}</p>
                 </div>
             </div>
 
@@ -96,7 +99,7 @@ const CourseDetails = () => {
                         <CardFooter className='flex justify-center p-4'>
                             {
                                 purchased ?
-                                    <Button className="w-full">Continue Course</Button>
+                                    <Button className="w-full" onClick={handleContinueCourse}>Continue Course</Button>
                                     : <ByCourseButton courseId={courseId} />
                             }
                         </CardFooter>
