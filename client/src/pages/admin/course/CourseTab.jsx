@@ -15,6 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from '../../../features/api/courseApi'
 import { toast } from 'sonner'
+import courses from '../../student/courses'
 
 export const CourseTab = () => {
     const navigate = useNavigate()
@@ -67,7 +68,7 @@ export const CourseTab = () => {
 
     const { data: courseByIdData, isLoading: CourseByIdLoading, refetch } = useGetCourseByIdQuery(courseId)
     const course = courseByIdData?.course
-
+    
     useEffect(() => {
         if (course) {
             setInput({

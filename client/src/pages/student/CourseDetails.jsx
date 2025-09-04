@@ -24,6 +24,7 @@ const CourseDetails = () => {
     if (isError) return <h1>Failed to load course details</h1>
 
     const { course, purchased } = data;
+    
 
     const handleContinueCourse = () => {
         navigate(`/course-progress/${courseId}`)
@@ -83,12 +84,12 @@ const CourseDetails = () => {
                             <div className='w-full aspect-video mb-4 ' >
 
                                 <ReactPlayer
-                                    src="https://res.cloudinary.com/dz3opbqck/video/upload/v1756797908/nngcgzczabahr5xlie4o.mp4"
+                                    src={course?.lectures[0].videoUrl}
                                     controls
                                     width="100%"
                                     height="100%"
-                                    playing={false}   // autoplay band rakho
-                                    muted={true}      // muted start karne se controls unlock ho jate hain
+                                    // playing={false}   // autoplay band rakho
+                                    // muted={true}      // muted start karne se controls unlock ho jate hain
                                 />
                             </div>
                             <h1>{course?.lectures?.[0]?.lectureTitle}</h1>

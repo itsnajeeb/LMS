@@ -72,7 +72,7 @@ export const CreateCourse = () => {
                             <SelectItem value="Web Development">Web Development</SelectItem>
                             <SelectItem value="Frontend Development">Frontend Development</SelectItem>
                             <SelectItem value="Fullstack Development">Fullstack Development</SelectItem>
-                            <SelectItem value="MEARN Stck Development">MEARN Stck Development</SelectItem>
+                            <SelectItem value="MERN Stack Development">MERN Stack Development</SelectItem>
                             <SelectItem value="JavaScript">JavaScript </SelectItem>
                             <SelectItem value="Python">Python</SelectItem>
                             <SelectItem value="Docker">Docker</SelectItem>

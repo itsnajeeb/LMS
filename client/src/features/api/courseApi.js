@@ -20,9 +20,9 @@ export const courseApi = createApi({
         }),
 
         getPublisedCourse: builder.query({
-            query:()=>({
-                url:"/published-courses",
-                method:"GET"
+            query: () => ({
+                url: "/published-courses",
+                method: "GET"
             })
         }),
 
@@ -86,6 +86,27 @@ export const courseApi = createApi({
                 method: "GET"
             }),
         }),
+        getSearchCourse: builder.query({
+            query: ({ searchQuery, categories, sortByPrice }) => {
+                
+                //build query string
+                let queryString = `/search?query=${encodeURIComponent, searchQuery}`;
+                //append categories
+                if (categories && categories.length > 0) {
+                    const categoriesString = categories.map(encodeURIComponent).join(",");
+                    queryString += `&categories=${categoriesString}`;
+                }
+                //append sort by price is available
+                if (sortByPrice) {
+                    queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`
+                }
+                
+                return {
+                    url: queryString,
+                    method: "GET"
+                }
+            }
+        }),
         publishCourse: builder.mutation({
             query: ({ courseId, query }) => ({
                 url: `/${courseId}?publish=${query}`,
@@ -110,4 +131,5 @@ export const {
     useRemoveLectureMutation,
     useGetLectureByIdQuery,
     usePublishCourseMutation,
+    useGetSearchCourseQuery,
 } = courseApi
