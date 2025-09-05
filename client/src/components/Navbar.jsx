@@ -72,7 +72,7 @@ const Navbar = () => {
                                             user.role === "instructor" && (
                                                 <>
                                                     <DropdownMenuSeparator />
-                                                    <DropdownMenuItem className="cursor-pointer">Dashboard</DropdownMenuItem>
+                                                    <DropdownMenuItem className="cursor-pointer"><Link to={'/admin/dashboard'}>Dashboard</Link></DropdownMenuItem>
                                                 </>
                                             )
                                         }
@@ -94,8 +94,10 @@ const Navbar = () => {
             {/* Mobile Navbar  */}
             <div className='flex md:hidden items-center justify-between px-4 h-full'>
                 <div className='flex  items-center gap-2 justify-center'>
-                    <School />
-                    <h1 className=' sm:text-2xl font-extrabold self-center text-xl'>E-Learning</h1>
+                    <Link to={'/'} className='flex gap-2 items-center'>
+                        <School />
+                        <h1 className=' sm:text-2xl font-extrabold self-center text-xl'>E-Learning</h1>
+                    </Link>
                 </div>
                 <MobileNavbar />
             </div>
@@ -146,28 +148,33 @@ const MobileNavbar = () => {
 
             <SheetContent className="flex flex-col  ">
                 <SheetHeader className="flex flex-row items-center justify-between w-full  mt-10">
+
+
+
                     <SheetTitle>E-Learning</SheetTitle>
                     <div className="cursor-pointer">
                         <DarkMode />
                     </div>
                 </SheetHeader>
 
-                <Separator className='mr-2' />
-                <nav className='flex flex-col space-y-4 px-4'>
-                    <span> My Learning</span>
-                    <span> Edit Profile</span>
-                    <span onClick={logoutHandler}> Log out</span>
-                </nav>
+                <Separator className='border' />
+                <div className='flex flex-col gap-2'>
+                    <nav className='flex flex-col space-y-4 px-4'>
+                        <span > <Link to={'my-learning'}> My Learning</Link></span>
+                        <span><Link to={'profile'}> Edit Profile</Link></span>
+                        <span onClick={logoutHandler}> Log out</span>
+                    </nav>
 
-                {
-                    role === "instructor" && (
-                        <SheetFooter>
-                            <SheetClose asChild>
-                                <Button type="submit">Dashboard</Button>
-                            </SheetClose>
-                        </SheetFooter>
-                    )
-                }
+                    {
+                        role === "instructor" && (
+                            <SheetFooter>
+                                <SheetClose asChild>
+                                    <Button ><Link to={'/admin/dashboard'}>Dashboard</Link></Button>
+                                </SheetClose>
+                            </SheetFooter>
+                        )
+                    }
+                </div>
             </SheetContent>
         </Sheet>
     )

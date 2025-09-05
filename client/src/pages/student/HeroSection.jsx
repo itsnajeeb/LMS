@@ -27,16 +27,17 @@ const HeroSection = () => {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="outline-none border-none focus-visible:ring-0 px-5 py-3 text-lg font-semibold text-gray-900
+                        className="outline-none border-none focus-visible:ring-0 px-5 py-6 text-md font-semibold text-gray-900
                         placeholder-gray-400
                         dark:text-gray-100 
-                        dark:placeholder-gray-500 "
+                        dark:placeholder-gray-500
+                        md:text-lg "
                     />
                     <Button
                         className="bg-blue-600 border-none rounded-r-full py-6 cursor-pointer w-24 font-semibold  shadow-lg
                     hover:bg-blue-700
                     dark:bg-blue-700
-                    dark:hover:bg-blue-800">Search</Button>
+                    dark:hover:bg-blue-800 text-md md:text-lg">Search</Button>
 
                 </form>
                 <Button

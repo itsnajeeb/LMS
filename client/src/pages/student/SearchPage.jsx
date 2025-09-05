@@ -20,10 +20,11 @@ const SearchPage = () => {
         sortByPrice
     });
 
+    console.log("DATA > ", data);
+
     const isEmpty = !isLoading && data?.courses.length === 0;
 
     const handleFilterChange = (categories, price) => {
-
         setSelectedCategories(categories)
         setSortByPrice(price)
     }
@@ -34,9 +35,8 @@ const SearchPage = () => {
                 <p>Showing result for {""} <span className='text-blue-700 font-semibold italic'>{query}</span></p>
             </div>
             <div className='flex flex-col md:flex-row gap-10'>
-                <Filter
-                    handleFilterChange={handleFilterChange}
-                />
+                <Filter handleFilterChange={handleFilterChange} />
+
                 <div className='flex-1'>
                     {
                         isLoading ? (

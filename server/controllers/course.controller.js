@@ -342,10 +342,7 @@ export const togglePublishCourse = async (req, res) => {
 export const searchCourse = async (req, res) => {
     try {
         const { query = "", categories = [], sortByPrice = "" } = req.query;
-        console.log(categories);
         
-        console.log("CATEGORES", categories);
-
         // create search query
         const searchCriteria = {
             isPublished: true,

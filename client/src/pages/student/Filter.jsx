@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 const categories = [
-    { id: "Next JS", label: "Next JS" },
+    { id: "nextjs", label: "Next JS" },
     { id: "data science", label: "Data Science" },
     { id: "frontend development", label: "Frontend Development" },
     { id: "fullstack development", label: "Fullstack Development" },
@@ -23,8 +23,7 @@ const categories = [
     { id: "docker", label: "Docker" },
     { id: "html", label: "HTML" },
 ]
-const Filter = ({handleFilterChange }) => {
-
+const Filter = ({ handleFilterChange }) => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [sortByPrice, setSortByPrice] = useState("")
 
@@ -40,7 +39,7 @@ const Filter = ({handleFilterChange }) => {
     };
 
 
-    const selectByPriceHandler = (selectedValue) => {
+    const selectByPriceHandler = (selectedValue)=>{
         setSortByPrice(selectedValue)
         handleFilterChange(selectedCategories, selectedValue)
     }
@@ -50,7 +49,7 @@ const Filter = ({handleFilterChange }) => {
             <div className='flex justify-between items-center'>
                 <h1 className='font-semibold text-lg md:text-xl'>Filter Options</h1>
 
-                <Select onValueChange={selectByPriceHandler}>
+                <Select onValueChange = {selectByPriceHandler}>
                     <SelectTrigger className=" cursor-pointer">
                         <SelectValue placeholder="Short By" />
                     </SelectTrigger>
@@ -70,12 +69,12 @@ const Filter = ({handleFilterChange }) => {
                 <h1 className='font-semibold mb-2'>CATEGORY</h1>
                 {
                     categories.map((category) => (
-
+                        
                         <div key={category.id} className='flex items-center space-x-2 my-3'>
                             <Checkbox
                                 className="cursor-pointer"
                                 id={category.id}
-                                onCheckedChange={() => handleCategoryChange(category)} />
+                                onCheckedChange={() => handleCategoryChange(category.id)} />
                             <Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{category.label}</Label>
                         </div>
                     ))

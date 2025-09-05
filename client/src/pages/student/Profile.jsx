@@ -45,7 +45,9 @@ const Profile = () => {
 
 
     const { user } = data || {};
-    const enrolledCourses = user?.enrolledCourses || [];
+    
+    const enrolledCourses = user?.enrolledCourse || [];
+    
 
     const updateUserHandler = async () => {
         const formData = new FormData();

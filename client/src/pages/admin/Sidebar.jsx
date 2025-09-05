@@ -9,8 +9,8 @@ const Sidebar = () => {
             <div
                 className="hidden lg:block fixed left-0 top-16 
                w-[250px] sm:w-[300px] h-[calc(100vh-64px)]
-               space-y-8 border border-gray-300 bg-[#f0f0f0] p-5 
-               dark:border-gray-700"
+               space-y-8 border border-gray-300  p-5 
+               dark:border-gray-700 "
             >
                 <div className="space-y-4">
                     <Link to="dashboard" className="flex gap-2 font-semibold">
