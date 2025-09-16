@@ -25,7 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 app.use(cors({
-    origin: 'https://lms-host-c8ig.onrender.com/',
+    origin: 'https://lms-host-c8ig.onrender.com',
     credentials: true,
 }))
 
@@ -36,12 +36,13 @@ app.use('/api/v1/course', courseRoutre)
 app.use('/api/v1/purchase', purchaseRoute)
 app.use('/api/v1/progress', courseProgressRoute)
 
+// --- static files for client ---
+app.use(express.static(path.join(DIRNAME, "client", "dist")))
 
-app.use(express.static(path.join(DIRNAME, "/client/dist")))
-app.use(/.*/, (_, res) => {
-    res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"))
+// --- SPA fallback (for React/Vue/Angular router) ---
+app.use('/*', (_, res) => {
+  res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"))
 })
-
 
 app.listen(PORT, () => {
     console.log(`Server is listening at ${PORT}`);
