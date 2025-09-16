@@ -1,181 +1,182 @@
-import { Menu, School } from 'lucide-react'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from './ui/button';
-import { DarkMode } from '../DarkMode';
-import { toast } from 'sonner'
-import { Links, useNavigate } from 'react-router-dom'
-import { useDispatch } from "react-redux";
-import { userLoggedOut } from "../features/authSlice.js";
-import { authApi } from "../features/api/authApi.js";
+import { useEffect } from "react";
+import { Menu, School, LogOut, User, LayoutDashboard } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { DarkMode } from "../DarkMode";
+
+import { userLoggedOut } from "../features/authSlice";
+import { authApi, useLogoutUserMutation } from "../features/api/authApi";
 
 const Navbar = () => {
+  const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
 
-    const { user } = useSelector(store => store.auth)
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const [logoutUser, { data, isSuccess }] = useLogoutUserMutation()
+  const logoutHandler = async () => {
+    await logoutUser().unwrap();
+    dispatch(userLoggedOut());
+    dispatch(authApi.util.resetApiState());
+    navigate("/login");
+  };
 
-
-    const logoutHandler = async () => {
-        await logoutUser().unwrap();         // backend logout API
-        dispatch(userLoggedOut());           // authSlice clear
-        dispatch(authApi.util.resetApiState()); // RTK Query cache clear
-        navigate('/login')
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Logged out successfully");
     }
+  }, [isSuccess]);
 
-    useEffect(() => {
-        if (isSuccess) {
-            toast.success(data.message || "Loguout Successfully")
-        }
-    }, [isSuccess])
+  return (
+    <header className="sticky top-0 z-20 w-full border-b bg-white/80 backdrop-blur-md dark:bg-gray-900/80 dark:border-gray-800">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2 font-extrabold text-xl">
+          <School className="h-6 w-6 text-primary" />
+          <span className="hidden sm:block">E-Learning</span>
+        </Link>
 
-
-    return (
-        <div className='h-16 dark:bg-[#0A0A0A] bg-white  border-b dark:border-b-gray-800  gap-10 sticky top-0 w-full z-10'>
-            <div className=' max-w-7xl mx-auto hidden md:flex  md:justify-between md:items-center gap-10 h-full px-4'>
-                <div className='flex gap-2'>
-                    <Link to={'/'} className='flex gap-2'>
-                        <School size={30} />
-                        <h1 className='hidden md:block text-2xl font-extrabold'>E-Learning</h1>
-                    </Link>
-                </div>
-
-                {/* User Icon and dark mode icon  */}
-                <div className='flex items-center gap-8'>
-                    {
-                        user ?
-                            (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger>
-                                        <Avatar className="cursor-pointer">
-                                            <AvatarImage src={user?.profileUrl || "https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=0&k=20&c=UEa7oHoOL30ynvmJzSCIPrwwopJdfqzBs0q69ezQoM8="} />
-                                            <AvatarFallback>CN</AvatarFallback>
-                                        </Avatar>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuLabel className="cursor-pointer">My Account</DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="cursor-pointer"><Link to={'my-learning'}>My Learning</Link></DropdownMenuItem>
-                                        <DropdownMenuItem className="cursor-pointer"><Link to={'profile'}>Edit Profile</Link></DropdownMenuItem>
-                                        <DropdownMenuItem className="cursor-pointer" onClick={logoutHandler}> Log out</DropdownMenuItem>
-
-                                        {
-                                            user.role === "instructor" && (
-                                                <>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem className="cursor-pointer"><Link to={'/admin/dashboard'}>Dashboard</Link></DropdownMenuItem>
-                                                </>
-                                            )
-                                        }
-
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            ) : (
-                                <div className='flex items-center gap-2'>
-                                    <Button className="cursor-pointer" variant="outline " onClick={() => navigate('/login')}>Login</Button>
-                                    <Button className="cursor-pointer" onClick={() => navigate('/signup')}>Signup</Button>
-                                </div>
-                            )}
-                    <div className="cursor-pointer" >
-                        <DarkMode />
-                    </div>
-                </div>
-            </div>
-
-            {/* Mobile Navbar  */}
-            <div className='flex md:hidden items-center justify-between px-4 h-full'>
-                <div className='flex  items-center gap-2 justify-center'>
-                    <Link to={'/'} className='flex gap-2 items-center'>
-                        <School />
-                        <h1 className=' sm:text-2xl font-extrabold self-center text-xl'>E-Learning</h1>
-                    </Link>
-                </div>
-                <MobileNavbar />
-            </div>
+        {/* Desktop Actions */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link to="/courses" className="hover:text-primary transition">
+            Courses
+          </Link>
+          <Link to="/about" className="hover:text-primary transition">
+            About
+          </Link>
+          <Link to="/contact" className="hover:text-primary transition">
+            Contact
+          </Link>
         </div>
-    )
-}
 
-export default Navbar
-
-import {
-    Sheet,
-    SheetClose,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "./ui/sheet"
-import { Separator } from '@radix-ui/react-dropdown-menu';
-import { Link, } from 'react-router-dom';
-import { useLogoutUserMutation } from '../features/api/authApi';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
-const MobileNavbar = () => {
-    const role = 'instructor'
-    const navigate = useNavigate()
-    const [logoutUser, { data, isSuccess }] = useLogoutUserMutation()
-    useEffect(() => {
-        if (isSuccess) {
-            toast.success(data.message || "Loguout Successfully")
-            navigate("/login")
-        }
-    }, [isSuccess])
-
-    const logoutHandler = async () => {
-        await logoutUser()
-    }
-    return (
-        <Sheet>
-            <SheetTrigger asChild  >
-                <Button size='icon'
-                    className="rounded-full bg-gray-100 hover:bg-gray-200 cursor-pointer "
-                    variant="outline">
-                    <Menu />
-                </Button>
-            </SheetTrigger>
-
-            <SheetContent className="flex flex-col  ">
-                <SheetHeader className="flex flex-row items-center justify-between w-full  mt-10">
-
-
-
-                    <SheetTitle>E-Learning</SheetTitle>
-                    <div className="cursor-pointer">
-                        <DarkMode />
-                    </div>
-                </SheetHeader>
-
-                <Separator className='border' />
-                <div className='flex flex-col gap-2'>
-                    <nav className='flex flex-col space-y-4 px-4'>
-                        <span > <Link to={'my-learning'}> My Learning</Link></span>
-                        <span><Link to={'profile'}> Edit Profile</Link></span>
-                        <span onClick={logoutHandler}> Log out</span>
-                    </nav>
-
-                    {
-                        role === "instructor" && (
-                            <SheetFooter>
-                                <SheetClose asChild>
-                                    <Button ><Link to={'/admin/dashboard'}>Dashboard</Link></Button>
-                                </SheetClose>
-                            </SheetFooter>
-                        )
+        {/* User & Controls */}
+        <div className="flex items-center gap-4">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage
+                    src={
+                      user?.profileUrl ||
+                      "https://via.placeholder.com/150?text=User"
                     }
-                </div>
-            </SheetContent>
-        </Sheet>
-    )
-}
+                  />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/my-learning" className="flex items-center gap-2">
+                    <User className="h-4 w-4" /> My Learning
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center gap-2">
+                    <User className="h-4 w-4" /> Edit Profile
+                  </Link>
+                </DropdownMenuItem>
+                {user.role === "instructor" && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/admin/dashboard"
+                      className="flex items-center gap-2"
+                    >
+                      <LayoutDashboard className="h-4 w-4" /> Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer text-red-500"
+                  onClick={logoutHandler}
+                >
+                  <LogOut className="h-4 w-4" /> Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="hidden sm:flex gap-2">
+              <Button variant="outline" onClick={() => navigate("/login")}>
+                Login
+              </Button>
+              <Button onClick={() => navigate("/signup")}>Signup</Button>
+            </div>
+          )}
+          <DarkMode />
+
+          {/* Mobile Menu */}
+          <div className="md:hidden">
+            <MobileNavbar
+              user={user}
+              logoutHandler={logoutHandler}
+            />
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Navbar;
+
+// Mobile Navbar
+const MobileNavbar = ({ user, logoutHandler }) => {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button size="icon" variant="ghost" className="rounded-full">
+          <Menu />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-64">
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2">
+            <School /> E-Learning
+          </SheetTitle>
+        </SheetHeader>
+        <nav className="mt-6 flex flex-col gap-4 text-lg">
+          <Link to="/courses">Courses</Link>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Contact</Link>
+          {user && (
+            <>
+              <Link to="/my-learning">My Learning</Link>
+              <Link to="/profile">Edit Profile</Link>
+              {user.role === "instructor" && (
+                <Link to="/admin/dashboard">Dashboard</Link>
+              )}
+              <span
+                onClick={logoutHandler}
+                className="cursor-pointer text-red-500"
+              >
+                Log out
+              </span>
+            </>
+          )}
+        </nav>
+        {!user && (
+          <div className="mt-6 flex flex-col gap-2">
+            <Button onClick={() => navigate("/login")}>Login</Button>
+            <Button variant="outline" onClick={() => navigate("/signup")}>
+              Signup
+            </Button>
+          </div>
+        )}
+      </SheetContent>
+    </Sheet>
+  );
+};

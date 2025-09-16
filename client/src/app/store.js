@@ -8,11 +8,15 @@ import { courseProgressApi } from '../features/api/courseProgressApi';
 export const appStore = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(authApi.middleware, courseApi.middleware, purchaseApi.middleware, courseProgressApi.middleware),
+        getDefaultMiddleware().concat(authApi.middleware,
+            courseApi.middleware,
+            purchaseApi.middleware,
+            courseProgressApi.middleware
+        ),
 });
 
 const initializeApp = async () => {
-    await appStore.dispatch(
+        await appStore.dispatch(
         authApi.endpoints.loadUser.initiate({}, { forceRefetch: true }))
 }
 

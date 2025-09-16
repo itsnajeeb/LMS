@@ -17,6 +17,8 @@ import CourseProgress from './pages/student/CourseProgress'
 import SearchPage from './pages/student/SearchPage'
 import { AdminRoute, AuthenticatedUser, ProtectedRoute } from './components/ProtectedRoute'
 import PurchaseCourseProtectedRoute from './components/PurchaseCourseRoute'
+import Footer from './components/Footer'
+import Contact from './components/contact'
 import { ThemeProvider } from './components/ThemeProvider'
 const appRouter = createBrowserRouter([
   {
@@ -29,6 +31,8 @@ const appRouter = createBrowserRouter([
           <>
             <HeroSection />
             <Course />
+            <Contact/>
+            <Footer/>
           </>
       },
       {
