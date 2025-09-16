@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import connectDB from './database/db.js';
 import userRoute from './routes/user.route.js'
-import courseRoutre from './routes/course.route.js'
+import courseRoute from './routes/course.route.js'
 import mediaRoute from './routes/media.route.js'
 import cookieParser from 'cookie-parser';
 import purchaseRoute from './routes/purchaseCourse.route.js'
@@ -32,7 +32,7 @@ app.use(cors({
 //apis
 app.use('/api/v1/media', mediaRoute)
 app.use('/api/v1/user', userRoute)
-app.use('/api/v1/course', courseRoutre)
+app.use('/api/v1/course', courseRoute)
 app.use('/api/v1/purchase', purchaseRoute)
 app.use('/api/v1/progress', courseProgressRoute)
 
@@ -40,10 +40,9 @@ app.use('/api/v1/progress', courseProgressRoute)
 app.use(express.static(path.join(DIRNAME, "client", "dist")))
 
 // --- SPA fallback (for React/Vue/Angular router) ---
-app.get("/*", (_, res) => {
+app.use(/.*/, (_, res) => {
   res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"));
 });
-
 app.listen(PORT, () => {
     console.log(`Server is listening at ${PORT}`);
 
