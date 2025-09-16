@@ -8,10 +8,15 @@ import cookieParser from 'cookie-parser';
 import purchaseRoute from './routes/purchaseCourse.route.js'
 import courseProgressRoute from './routes/courseProgress.route.js'
 import cors from 'cors'
+import path from 'path'
 dotenv.config({})
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+
+const DIRNAME = path.resolve()
+
+
 //Connect to DB
 connectDB()
 
@@ -32,6 +37,10 @@ app.use('/api/v1/purchase', purchaseRoute)
 app.use('/api/v1/progress', courseProgressRoute)
 
 
+app.use(express.static(path.join(DIRNAME, "/client/dist")))
+app.use(/.*/, (_, res) => {
+    res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"))
+})
 
 
 app.listen(PORT, () => {
